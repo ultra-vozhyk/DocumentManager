@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/data/mongo
+        http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+        <!-- Enable context annotations -->
+        <context:component-scan base-package="by.pg.docmanager"></context:component-scan>
+        <context:annotation-config/>
+
+        <!-- Include property file with mongoDB connection settings -->
+        <context:property-placeholder location="classpath:property/mongodb.property" />
+
+        <mongo:mongo-client id="mongoClient" host="${mongo.host}" port="${mongo.port}" />
+
+        <mongo:db-factory id="mongoDbFactory" dbname="${mongo.db}" mongo-ref="mongoClient"/>
+
+        <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+            <constructor-arg name="mongoDbFactory"  ref="mongoDbFactory"/>
+        </bean>
+
+        <bean id="fileManager" class="by.pg.docmanager.filemanager.FileManagerImpl">
+            <constructor-arg name="storagePath" value="C:/docStorage/uploaded_files/" />
+        </bean>
+
+</beans>
